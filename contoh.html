@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Walimatul 'Ursy - Ahmad &amp; Anisa</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Pinyon+Script&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        emeraldTheme: {
+                            800: '#064e3b',
+                            900: '#022c22',
+                            950: '#011c16',
+                        },
+                        gold: {
+                            100: '#fef08a',
+                            200: '#fde047',
+                            300: '#facc15',
+                            400: '#fbbf24',
+                            500: '#d97706',
+                            600: '#b45309',
+                        }
+                    },
+                    fontFamily: {
+                        arabic: ['Amiri', 'serif'],
+                        serifTitle: ['Playfair Display', 'serif'],
+                        script: ['Pinyon Script', 'cursive'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Islamic Pattern Background Overlay */
+        .bg-islamic-pattern {
+            background-color: #011c16;
+            background-image: 
+                radial-gradient(rgba(251, 191, 36, 0.12) 1.5px, transparent 0),
+                radial-gradient(rgba(6, 78, 59, 0.8) 2px, #011c16 2px);
+            background-size: 28px 28px, 56px 56px;
+            background-position: 0 0, 28px 28px;
+        }
+
+        /* Metallic Gold Gradient Text */
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #fef08a 0%, #fbbf24 40%, #facc15 70%, #b45309 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Glassmorphism Emerald Card with Gold Frame */
+        .glass-islamic-card {
+            background: rgba(2, 44, 34, 0.90);
+            backdrop-filter: blur(16px);
+            border: 1.5px solid rgba(251, 191, 36, 0.4);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.8), inset 0 0 25px rgba(251, 191, 36, 0.08);
+            position: relative;
+        }
+
+        /* Gold Flourish Corner Decorative Borders */
+        .glass-islamic-card::before, .glass-islamic-card::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            border-color: rgba(251, 191, 36, 0.7);
+            pointer-events: none;
+        }
+        .glass-islamic-card::before {
+            top: 8px; left: 8px;
+            border-top: 2px solid; border-left: 2px solid;
+            border-top-left-radius: 6px;
+        }
+        .glass-islamic-card::after {
+            bottom: 8px; right: 8px;
+            border-bottom: 2px solid; border-right: 2px solid;
+            border-bottom-right-radius: 6px;
+        }
+
+        /* Canvas Particle Overlay */
+        #sparkles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 30;
+        }
+
+        /* Fade-Up Animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Custom Gold Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #011c16;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #fbbf24;
+            border-radius: 4px;
+        }
+
+        /* Floating Slow Animation */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(2deg); }
+        }
+        .animate-float {
+            animation: floatSlow 6s ease-in-out infinite;
+        }
+
+        /* Glowing Pulse Effect */
+        @keyframes goldGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(251, 191, 36, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(251, 191, 36, 0.7); }
+        }
+        .glow-gold {
+            animation: goldGlow 3s infinite;
+        }
+    </style>
+</head>
+<body class="font-sans bg-emeraldTheme-950 text-amber-50 antialiased overflow-x-hidden bg-islamic-pattern">
+
+    <!-- Gold Particle Sparkles Canvas -->
+    <canvas id="sparkles-canvas"></canvas>
+
+    <!-- Background Music Audio -->
+    <audio id="bg-music" loop preload="none">
+        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=arabic-instrumental-ambient-112343.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Floating Audio Toggle Button -->
+    <button id="music-toggle" aria-label="Toggle Audio" class="fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full bg-emeraldTheme-800 text-gold-300 shadow-2xl flex items-center justify-center border-2 border-gold-400 hover:scale-110 transition duration-300 hidden">
+        <i id="music-icon" class="fas fa-compact-disc text-xl"></i>
+    </button>
+
+    <!-- COVER SECTION OVERLAY (DEKORASI MEWAH & RAMAI) -->
+    <section id="cover-section" class="fixed inset-0 z-50 bg-emeraldTheme-950 text-white flex flex-col justify-between items-center text-center p-6 transition-transform duration-1000 ease-in-out overflow-hidden">
+        
+        <!-- Background Layer 1: Image dengan Overlay Gradient -->
+        <div class="absolute inset-0 bg-cover bg-center scale-105 filter brightness-75 transition-all duration-1000" style="background-image: url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80');"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-emeraldTheme-950/90 via-emeraldTheme-950/80 to-emeraldTheme-950/95"></div>
+
+        <!-- Background Layer 2: Ornamen Frame Emas Mewah -->
+        <div class="absolute inset-4 md:inset-8 border-2 border-gold-400/40 rounded-3xl pointer-events-none z-10 flex items-center justify-center">
+            <div class="absolute inset-2 border border-gold-400/20 rounded-[22px]"></div>
+            
+            <!-- Corner Flourish Elements -->
+            <div class="absolute top-2 left-2 text-gold-400/80 text-xl md:text-3xl"><i class="fas fa-kaaba"></i></div>
+            <div class="absolute top-2 right-2 text-gold-400/80 text-xl md:text-3xl"><i class="fas fa-star-and-crescent"></i></div>
+            <div class="absolute bottom-2 left-2 text-gold-400/80 text-xl md:text-3xl"><i class="fas fa-star-and-crescent"></i></div>
+            <div class="absolute bottom-2 right-2 text-gold-400/80 text-xl md:text-3xl"><i class="fas fa-kaaba"></i></div>
+        </div>
+
+        <!-- Glow Effect Center -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gold-400/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <!-- Top Badge Header -->
+        <div class="relative z-20 pt-8">
+            <div class="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-emeraldTheme-900/90 border border-gold-400/60 text-gold-300 text-xs tracking-[0.3em] uppercase font-semibold shadow-2xl backdrop-blur-md glow-gold">
+                <i class="fas fa-heart text-gold-400"></i> The Wedding Of <i class="fas fa-heart text-gold-400"></i>
+            </div>
+        </div>
+
+        <!-- Main Center Card Content -->
+        <div class="relative z-20 my-auto space-y-5 max-w-xl w-full py-6 px-4">
+            
+            <!-- Monogram Inisial Emas -->
+            <div class="w-20 h-20 md:w-24 md:h-24 mx-auto rounded-full bg-gradient-to-tr from-gold-600 via-gold-300 to-gold-500 p-1 shadow-2xl animate-float">
+                <div class="w-full h-full bg-emeraldTheme-950 rounded-full flex items-center justify-center border border-gold-400/50">
+                    <span class="font-serifTitle text-2xl md:text-3xl font-extrabold gold-gradient-text tracking-wider">A &amp; A</span>
+                </div>
+            </div>
+
+            <!-- Kaligrafi Basmalah -->
+            <p class="font-arabic text-3xl md:text-4xl text-gold-300 drop-shadow-md" dir="rtl">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+            
+            <p class="font-serifTitle text-xs uppercase tracking-[0.3em] text-amber-200/90 font-medium">Walimatul 'Ursy</p>
+
+            <!-- Nama Pasangan Mempelai -->
+            <div class="space-y-1 py-2">
+                <h1 class="font-serifTitle text-4xl md:text-6xl gold-gradient-text tracking-wide font-extrabold uppercase leading-tight drop-shadow-2xl">
+                    Ahmad <br>
+                    <span class="font-script text-3xl md:text-5xl text-gold-200 normal-case my-1 block">&amp;</span> 
+                    Anisa
+                </h1>
+            </div>
+
+            <!-- Detail Tanggal & Lokasi Singkat -->
+            <div class="flex items-center justify-center gap-3 text-xs text-amber-200/90 font-medium pt-1">
+                <span class="h-[1px] w-8 bg-gold-400/50"></span>
+                <span class="tracking-widest uppercase"><i class="far fa-calendar-alt text-gold-400 mr-1.5"></i> Minggu, 20 Desember 2026</span>
+                <span class="h-[1px] w-8 bg-gold-400/50"></span>
+            </div>
+
+            <!-- Tamu Undangan Card -->
+            <div class="pt-3">
+                <p class="text-[11px] text-gold-300/90 uppercase tracking-widest mb-2 font-medium">Kepada Yth. Bapak/Ibu/Saudara/i:</p>
+                <div class="inline-block bg-emeraldTheme-900/95 backdrop-blur-md px-8 py-2.5 rounded-2xl border border-gold-400/70 shadow-2xl min-w-[220px]">
+                    <span id="guest-name" class="font-semibold text-sm md:text-base text-gold-100 block">Tamu Undangan</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Action Button -->
+        <div class="relative z-20 pb-8">
+            <button id="open-invitation" class="px-8 py-3.5 rounded-full bg-gradient-to-r from-gold-500 via-gold-300 to-gold-600 hover:from-gold-400 hover:to-gold-500 text-emeraldTheme-950 font-bold text-xs tracking-widest uppercase shadow-2xl transition duration-300 flex items-center gap-3 transform hover:scale-105 border-2 border-gold-200">
+                <i class="fas fa-envelope-open-text text-base"></i> Buka Undangan
+            </button>
+        </div>
+    </section>
+
+    <!-- MAIN CONTENT SECTION -->
+    <main id="main-content" class="relative z-10">
+
+        <!-- Islamic Quote Section -->
+        <section class="py-16 px-6 text-center max-w-3xl mx-auto reveal">
+            <div class="glass-islamic-card p-8 md:p-12 rounded-3xl space-y-5">
+                <div class="w-14 h-14 rounded-full bg-gold-400/20 text-gold-300 border border-gold-400/50 flex items-center justify-center mx-auto text-2xl shadow-inner">
+                    <i class="fas fa-rings-wedding"></i>
+                </div>
+                
+                <p class="font-arabic text-xl md:text-2xl text-gold-300 leading-relaxed" dir="rtl">
+                    وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً
+                </p>
+
+                <p class="text-amber-100 font-sans text-xs md:text-sm leading-relaxed opacity-90 italic">
+                    "Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu isteri-isteri dari jenismu sendiri, supaya kamu cenderung dan merasa tenteram kepadanya, dan dijadikan-Nya diantaramu rasa kasih dan sayang."<br>
+                    <span class="font-semibold text-gold-300 font-normal not-italic mt-1 block">(QS. Ar-Rum: 21)</span>
+                </p>
+
+                <div class="pt-2">
+                    <p class="text-xs text-amber-200/90 leading-relaxed">
+                        Assalamu’alaikum Warahmatullahi Wabarakatuh.<br>
+                        Maha Suci Allah SWT yang telah menciptakan makhluk-Nya berpasang-pasangan. Ya Allah, perkenankanlah kami menyatukan dua hati dalam ikatan suci pernikahan.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Groom & Bride Section -->
+        <section class="py-10 px-6 max-w-4xl mx-auto">
+            <div class="glass-islamic-card p-8 md:p-12 rounded-3xl text-center reveal space-y-8">
+                <div class="text-center">
+                    <span class="text-gold-400 text-xs font-semibold tracking-widest uppercase">Mempelai Pria &amp; Wanita</span>
+                    <h2 class="font-serifTitle text-3xl font-bold text-gold-200 mt-1">Pasangan Mempelai</h2>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <!-- Groom -->
+                    <div class="space-y-3">
+                        <div class="relative w-36 h-36 mx-auto rounded-full border-4 border-gold-400 shadow-2xl overflow-hidden p-1 bg-gradient-to-tr from-gold-500 via-gold-200 to-gold-600">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80" alt="Mempelai Pria" class="w-full h-full object-cover rounded-full">
+                        </div>
+                        <h3 class="font-serifTitle text-2xl font-bold gold-gradient-text">Ahmad Zulkarnain, S.T.</h3>
+                        <p class="text-xs text-amber-200/80">
+                            Putra Pertama dari <br>
+                            <strong class="text-gold-300">Bpk. H. Rahmat Hidayat &amp; Ibu Hj. Siti Rahmah</strong>
+                        </p>
+                    </div>
+
+                    <!-- Bride -->
+                    <div class="space-y-3">
+                        <div class="relative w-36 h-36 mx-auto rounded-full border-4 border-gold-400 shadow-2xl overflow-hidden p-1 bg-gradient-to-tr from-gold-500 via-gold-200 to-gold-600">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80" alt="Mempelai Wanita" class="w-full h-full object-cover rounded-full">
+                        </div>
+                        <h3 class="font-serifTitle text-2xl font-bold gold-gradient-text">Anisa Nur Syafiqah, S.Pd.</h3>
+                        <p class="text-xs text-amber-200/80">
+                            Putri Kedua dari <br>
+                            <strong class="text-gold-300">Bpk. H. Ahmad Mansyur &amp; Ibu Hj. Nur Fatimah</strong>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Countdown & Event Details -->
+        <section class="py-10 px-6 max-w-5xl mx-auto">
+            <div class="glass-islamic-card p-8 md:p-12 rounded-3xl shadow-2xl reveal">
+                
+                <div class="text-center mb-10">
+                    <span class="text-gold-400 text-xs font-semibold tracking-widest uppercase">Hitung Mundur Acara</span>
+                    <h2 class="font-serifTitle text-3xl md:text-4xl gold-gradient-text font-bold mt-1">Countdown To Celebration</h2>
+                </div>
+
+                <!-- Countdown Timer -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto mb-10 text-center" id="countdown">
+                    <div class="bg-emeraldTheme-950/90 p-4 rounded-2xl border border-gold-400/50 shadow-inner">
+                        <span id="days" class="font-serifTitle text-3xl md:text-4xl gold-gradient-text font-bold">00</span>
+                        <p class="text-[11px] text-gold-300/70 uppercase tracking-wider font-semibold mt-1">Hari</p>
+                    </div>
+                    <div class="bg-emeraldTheme-950/90 p-4 rounded-2xl border border-gold-400/50 shadow-inner">
+                        <span id="hours" class="font-serifTitle text-3xl md:text-4xl gold-gradient-text font-bold">00</span>
+                        <p class="text-[11px] text-gold-300/70 uppercase tracking-wider font-semibold mt-1">Jam</p>
+                    </div>
+                    <div class="bg-emeraldTheme-950/90 p-4 rounded-2xl border border-gold-400/50 shadow-inner">
+                        <span id="minutes" class="font-serifTitle text-3xl md:text-4xl gold-gradient-text font-bold">00</span>
+                        <p class="text-[11px] text-gold-300/70 uppercase tracking-wider font-semibold mt-1">Menit</p>
+                    </div>
+                    <div class="bg-emeraldTheme-950/90 p-4 rounded-2xl border border-gold-400/50 shadow-inner">
+                        <span id="seconds" class="font-serifTitle text-3xl md:text-4xl gold-gradient-text font-bold">00</span>
+                        <p class="text-[11px] text-gold-300/70 uppercase tracking-wider font-semibold mt-1">Detik</p>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8 items-center pt-6 border-t border-gold-500/20">
+                    <!-- Event Details -->
+                    <div class="space-y-4 text-center md:text-left">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold-400/10 text-gold-300 border border-gold-400/30 text-xs font-semibold uppercase">
+                            <i class="far fa-calendar-alt"></i> Waktu &amp; Lokasi Acara
+                        </div>
+                        <h3 class="font-serifTitle text-2xl font-bold text-gold-200">Akad &amp; Resepsi Pernikahan</h3>
+                        <p class="text-xs text-amber-200/90 leading-relaxed space-y-1">
+                            <strong class="text-gold-300 block">Hari &amp; Tanggal:</strong> Minggu, 20 Desember 2026<br>
+                            <strong class="text-gold-300 block">Akad Nikah:</strong> 08:00 - 10:00 WIB<br>
+                            <strong class="text-gold-300 block">Resepsi:</strong> 11:00 - 15:00 WIB<br>
+                            <strong class="text-gold-300 block">Lokasi:</strong> Grand Ballroom Hotel Mulia<br>
+                            <span class="text-[11px] text-amber-200/60 block">Jl. Asia Afrika No.6, Gelora, Kec. Tanah Abang, Jakarta Pusat</span>
+                        </p>
+
+                        <div class="pt-2">
+                            <a href="https://maps.google.com/?q=Hotel+Mulia+Senayan+Jakarta" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-400 hover:to-gold-500 text-emeraldTheme-950 text-xs font-bold uppercase tracking-wider transition duration-300 shadow-xl border border-gold-300 hover:scale-105 transform">
+                                <i class="fas fa-map-marked-alt text-base"></i> Buka Petunjuk Arah
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Maps Embed -->
+                    <div class="rounded-2xl overflow-hidden border-2 border-gold-400/50 shadow-2xl relative bg-emeraldTheme-950 min-h-[300px]">
+                        <iframe 
+                            title="Lokasi Acara"
+                            src="https://maps.google.com/maps?q=Hotel%20Mulia%20Senayan%20Jakarta&t=&z=16&ie=UTF8&iwloc=&output=embed" 
+                            width="100%" 
+                            height="320" 
+                            style="border:0;" 
+                            allowfullscreen="" 
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- RSVP Form & Wishes -->
+        <section class="py-10 px-6 max-w-3xl mx-auto">
+            <div class="glass-islamic-card p-8 md:p-12 rounded-3xl shadow-2xl reveal">
+                
+                <div class="text-center mb-8">
+                    <span class="text-gold-400 text-xs font-semibold tracking-widest uppercase">Konfirmasi Kehadiran</span>
+                    <h2 class="font-serifTitle text-3xl font-bold text-gold-200 mt-1">RSVP &amp; Doa Restu</h2>
+                </div>
+
+                <!-- RSVP Form -->
+                <form id="rsvp-wa-form" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gold-300 uppercase mb-1">Nama Lengkap</label>
+                        <input type="text" id="rsvp-name" required placeholder="Masukkan nama Anda / Keluarga" class="w-full px-4 py-3 rounded-xl border border-gold-400/40 focus:ring-2 focus:ring-gold-400 outline-none text-sm bg-emeraldTheme-950/90 text-white">
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gold-300 uppercase mb-1">Jumlah Tamu</label>
+                            <select id="rsvp-count" class="w-full px-4 py-3 rounded-xl border border-gold-400/40 focus:ring-2 focus:ring-gold-400 outline-none text-sm bg-emeraldTheme-950/90 text-white">
+                                <option value="1 Orang">1 Orang</option>
+                                <option value="2 Orang">2 Orang</option>
+                                <option value="3+ Orang">3+ Orang (Rombongan)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gold-300 uppercase mb-1">Status Kehadiran</label>
+                            <select id="rsvp-status" class="w-full px-4 py-3 rounded-xl border border-gold-400/40 focus:ring-2 focus:ring-gold-400 outline-none text-sm bg-emeraldTheme-950/90 text-white">
+                                <option value="InsyaAllah Hadir">InsyaAllah Hadir</option>
+                                <option value="Maaf Belum Bisa Hadir">Maaf Belum Bisa Hadir</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gold-300 uppercase mb-1">Ucapan &amp; Doa Restu</label>
+                        <textarea id="rsvp-message" rows="3" required placeholder="Tuliskan ucapan & doa..." class="w-full px-4 py-3 rounded-xl border border-gold-400/40 focus:ring-2 focus:ring-gold-400 outline-none text-sm bg-emeraldTheme-950/90 text-white resize-none"></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full py-3.5 rounded-xl bg-green-700 hover:bg-green-800 text-white font-semibold text-xs uppercase tracking-wider shadow-md transition flex items-center justify-center gap-2 border border-green-500">
+                        <i class="fab fa-whatsapp text-lg"></i> Kirim RSVP via WhatsApp
+                    </button>
+                </form>
+
+                <!-- Wishes Toggle Button -->
+                <div class="mt-10 pt-8 border-t border-gold-500/30 text-center">
+                    <button id="toggle-wishes-btn" class="px-6 py-2.5 rounded-full bg-emeraldTheme-950 hover:bg-emeraldTheme-800 text-gold-300 border border-gold-400 text-xs font-semibold uppercase tracking-wider transition flex items-center justify-center gap-2 mx-auto shadow-md">
+                        <i class="far fa-comments text-sm"></i>
+                        <span id="toggle-wishes-text">Lihat Semua Doa &amp; Ucapan</span>
+                        <i id="toggle-wishes-icon" class="fas fa-chevron-down transition-transform duration-300"></i>
+                    </button>
+
+                    <!-- Wishes Container -->
+                    <div id="wishes-wrapper" class="hidden mt-6 transition-all duration-500 ease-in-out text-left">
+                        <h3 class="font-serifTitle text-xl font-bold text-gold-200 text-center mb-4">Kumpulan Doa Restu</h3>
+                        <div id="wishes-container" class="space-y-3 max-h-80 overflow-y-auto pr-1">
+                            <!-- Dynamic Content Injected by JS -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Digital Envelope / Gift Section -->
+        <section class="py-10 px-6 max-w-3xl mx-auto">
+            <div class="glass-islamic-card p-8 md:p-12 rounded-3xl shadow-2xl text-center reveal">
+                <i class="fas fa-gift text-gold-400 text-3xl mb-2"></i>
+                <h2 class="font-serifTitle text-3xl font-bold text-gold-200">Amplop Digital / Hadiah</h2>
+                <p class="text-xs text-amber-200/70 mt-2 max-w-md mx-auto leading-relaxed">
+                    Doa tulus Anda adalah karunia terindah bagi kami. Namun jika ingin memberikan hadiah/tanda kasih untuk kedua mempelai, dapat disalurkan melalui:
+                </p>
+
+                <div class="grid md:grid-cols-2 gap-6 mt-8">
+                    <!-- Bank BSI -->
+                    <div class="bg-emeraldTheme-950/90 p-6 rounded-2xl border border-gold-400/40 shadow-inner space-y-2">
+                        <div class="flex justify-between items-center text-gold-200 font-bold text-sm">
+                            <span>Bank BSI</span>
+                            <i class="fas fa-building-columns text-gold-400"></i>
+                        </div>
+                        <p class="text-lg font-mono font-bold text-gold-300 tracking-wider">7123 4567 89</p>
+                        <p class="text-xs text-amber-200/60">a.n. Ahmad Zulkarnain</p>
+                        <button onclick="copyAccount('7123456789', this)" class="w-full py-2 rounded-lg bg-gold-500 hover:bg-gold-400 text-emeraldTheme-950 text-xs font-bold transition mt-2 flex items-center justify-center gap-1.5 shadow">
+                            <i class="far fa-copy"></i> Salin Rekening
+                        </button>
+                    </div>
+
+                    <!-- Bank BCA -->
+                    <div class="bg-emeraldTheme-950/90 p-6 rounded-2xl border border-gold-400/40 shadow-inner space-y-2">
+                        <div class="flex justify-between items-center text-gold-200 font-bold text-sm">
+                            <span>Bank BCA</span>
+                            <i class="fas fa-credit-card text-gold-400"></i>
+                        </div>
+                        <p class="text-lg font-mono font-bold text-gold-300 tracking-wider">8820 9876 54</p>
+                        <p class="text-xs text-amber-200/60">a.n. Anisa Nur Syafiqah</p>
+                        <button onclick="copyAccount('8820987654', this)" class="w-full py-2 rounded-lg bg-gold-500 hover:bg-gold-400 text-emeraldTheme-950 text-xs font-bold transition mt-2 flex items-center justify-center gap-1.5 shadow">
+                            <i class="far fa-copy"></i> Salin Rekening
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="py-10 text-center text-xs text-gold-300/60 border-t border-gold-500/20">
+            <p class="font-serifTitle text-xl gold-gradient-text font-bold mb-1">Ahmad &amp; Anisa Wedding</p>
+            <p>© 2026 The Wedding Of Ahmad &amp; Anisa. All Rights Reserved.</p>
+        </footer>
+
+    </main>
+
+    <script>
+        // 1. GOLD PARTICLES CANVAS ANIMATION
+        const canvas = document.getElementById('sparkles-canvas');
+        const ctx = canvas.getContext('2d');
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        });
+
+        const particles = Array.from({ length: 45 }, () => ({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            radius: Math.random() * 2.5 + 1,
+            speedY: Math.random() * 0.8 + 0.2,
+            speedX: Math.random() * 0.4 - 0.2,
+            opacity: Math.random() * 0.6 + 0.2,
+            pulse: Math.random() * 0.02 + 0.005
+        }));
+
+        function animateSparkles() {
+            ctx.clearRect(0, 0, width, height);
+            particles.forEach(p => {
+                p.y -= p.speedY;
+                p.x += p.speedX;
+                p.opacity += Math.sin(Date.now() * p.pulse) * 0.01;
+
+                if (p.y < 0) p.y = height;
+                if (p.x > width) p.x = 0;
+                if (p.x < 0) p.x = width;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(251, 191, 36, ${Math.abs(p.opacity)})`;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = '#facc15';
+                ctx.fill();
+            });
+            requestAnimationFrame(animateSparkles);
+        }
+        animateSparkles();
+
+        // 2. PARSE GUEST NAME FROM URL PARAMETER (?to=Nama+Tamu)
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const guest = urlParams.get('to');
+            if (guest) {
+                document.getElementById('guest-name').innerText = decodeURIComponent(guest);
+            }
+            loadWishes();
+        });
+
+        // 3. COVER SLIDE & BACKGROUND AUDIO CONTROLLER
+        const coverSection = document.getElementById('cover-section');
+        const openBtn = document.getElementById('open-invitation');
+        const bgMusic = document.getElementById('bg-music');
+        const musicToggle = document.getElementById('music-toggle');
+        const musicIcon = document.getElementById('music-icon');
+        let isPlaying = false;
+
+        openBtn.addEventListener('click', () => {
+            coverSection.classList.add('-translate-y-full');
+            musicToggle.classList.remove('hidden');
+            playAudio();
+        });
+
+        function playAudio() {
+            bgMusic.play().then(() => {
+                isPlaying = true;
+                musicIcon.className = "fas fa-compact-disc text-xl animate-spin";
+            }).catch(() => console.log('Audio Autoplay Blocked by Browser'));
+        }
+
+        musicToggle.addEventListener('click', () => {
+            if (isPlaying) {
+                bgMusic.pause();
+                musicIcon.className = "fas fa-music text-xl";
+                isPlaying = false;
+            } else {
+                playAudio();
+            }
+        });
+
+        // 4. COUNTDOWN TIMER TO EVENT DATE (DECEMBER 20, 2026)
+        const targetDate = new Date("December 20, 2026 08:00:00").getTime();
+        setInterval(() => {
+            const now = new Date().getTime();
+            const diff = targetDate - now;
+
+            if (diff > 0) {
+                document.getElementById('days').innerText = String(Math.floor(diff / (1000 * 60 * 60 * 24))).padStart(2, '0');
+                document.getElementById('hours').innerText = String(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+                document.getElementById('minutes').innerText = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+                document.getElementById('seconds').innerText = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0');
+            }
+        }, 1000);
+
+        // 5. RSVP VIA WHATSAPP FORM SUBMISSION
+        const rsvpForm = document.getElementById('rsvp-wa-form');
+        rsvpForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('rsvp-name').value;
+            const count = document.getElementById('rsvp-count').value;
+            const status = document.getElementById('rsvp-status').value;
+            const message = document.getElementById('rsvp-message').value;
+
+            const targetPhone = "6281234567890"; // Ganti dengan nomor WhatsApp penerima
+            const text = `Assalamu'alaikum.\nSaya *${name}*.\n\n*Konfirmasi Kehadiran:* ${status}\n*Jumlah Tamu:* ${count}\n*Doa Restu:* "${message}"\n\nTerima kasih.`;
+            
+            saveWish(name, message);
+            window.open(`https://wa.me/${targetPhone}?text=${encodeURIComponent(text)}`, '_blank');
+            rsvpForm.reset();
+        });
+
+        // 6. COLLAPSIBLE WISHES TOGGLE CONTROLLER
+        const toggleWishesBtn = document.getElementById('toggle-wishes-btn');
+        const wishesWrapper = document.getElementById('wishes-wrapper');
+        const toggleWishesText = document.getElementById('toggle-wishes-text');
+        const toggleWishesIcon = document.getElementById('toggle-wishes-icon');
+
+        toggleWishesBtn.addEventListener('click', () => {
+            const isHidden = wishesWrapper.classList.contains('hidden');
+            if (isHidden) {
+                wishesWrapper.classList.remove('hidden');
+                toggleWishesText.innerText = "Tutup Daftar Ucapan";
+                toggleWishesIcon.classList.add('rotate-180');
+            } else {
+                wishesWrapper.classList.add('hidden');
+                toggleWishesText.innerText = "Lihat Semua Doa & Ucapan";
+                toggleWishesIcon.classList.remove('rotate-180');
+            }
+        });
+
+        // 7. LOCAL STORAGE WISHES MANAGEMENT
+        function saveWish(sender, message) {
+            let wishes = JSON.parse(localStorage.getItem('wedding_wishes_ahmad_anisa')) || [];
+            wishes.unshift({ sender, message, time: 'Baru saja' });
+            localStorage.setItem('wedding_wishes_ahmad_anisa', JSON.stringify(wishes));
+            loadWishes();
+            
+            if (wishesWrapper.classList.contains('hidden')) {
+                toggleWishesBtn.click();
+            }
+        }
+
+        function loadWishes() {
+            const wishesContainer = document.getElementById('wishes-container');
+            let wishes = JSON.parse(localStorage.getItem('wedding_wishes_ahmad_anisa')) || [
+                { sender: "Ustadz Mansyur & Keluarga", message: "Barakallahu lakuma wa baraka 'alaikuma wa jama'a bainakuma fii khair. Selamat menempuh hidup baru untuk Ahmad & Anisa.", time: "Kemarin" },
+                { sender: "H. Ridwan & Ibu Nur", message: "Selamat atas pernikahan kalian. Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah.", time: "2 hari lalu" }
+            ];
+
+            wishesContainer.innerHTML = '';
+            wishes.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "p-3.5 rounded-xl bg-emeraldTheme-950 border border-gold-400/30 shadow-inner text-left";
+                card.innerHTML = `
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="font-semibold text-xs text-gold-300">${escapeHtml(item.sender)}</span>
+                        <span class="text-[10px] text-amber-200/50">${item.time}</span>
+                    </div>
+                    <p class="text-xs text-amber-100/80 leading-relaxed">${escapeHtml(item.message)}</p>
+                `;
+                wishesContainer.appendChild(card);
+            });
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        // 8. COPY BANK ACCOUNT NUMBER TO CLIPBOARD
+        function copyAccount(accNum, btn) {
+            const temp = document.createElement('input');
+            temp.value = accNum;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+
+            const origText = btn.innerHTML;
+            btn.innerHTML = `<i class="fas fa-check text-emerald-950"></i> Tersalin!`;
+            setTimeout(() => { btn.innerHTML = origText; }, 2000);
+        }
+
+        // 9. SMOOTH SCROLL REVEAL OBSERVER
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
